@@ -18,5 +18,9 @@ class InvalidItemType(Exception):
     pass
 
 
+class InvalidItemFeedback(Exception):
+    pass
+
+
 class VisibleSideNotShowableException(NotImplementedError):
     pass

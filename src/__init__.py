@@ -9,5 +9,9 @@ from .items import (
     MultipleChoiceSide,
     FillInSide,
     ItemType,
+    ItemHistory,
+    ItemFeedback,
+    ItemClassification,
+    ItemClassificationType,
 )
 from .answer_diff import AnswerDiff

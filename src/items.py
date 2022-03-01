@@ -2,9 +2,69 @@ from typing import List, Optional
 from src.answer_diff import AnswerDiff
 import src.errors as errors
 
+import enum
 import re
 
 _LINK_REGEX = re.compile("https://.+")
+
+
+class ItemFeedback(enum.Enum):
+    EASY = "EASY"
+    MEDIUM = "MEDIUM"
+    HARD = "HARD"
+    FAILED = "FAILED"
+
+
+class ItemClassificationType(enum.Enum):
+    E = "E"
+    D = "D"
+    C = "C"
+    B = "B"
+    A = "A"
+    APLUS = "APLUS"
+
+
+class ItemClassification:
+
+    ADVANCE_RULES = {
+        "E": "D",
+        "D": "C",
+        "C": "B",
+        "B": "A",
+        "A": "APLUS",
+        "APLUS": "APLUS",
+    }
+    REWIND_RULES = {"APLUS": "D", "A": "D", "B": "D", "C": "E", "D": "E", "E": "E"}
+
+    def __init__(self):
+        self.type_ = ItemClassificationType.E
+
+    def advance(self):
+        self.type_ = ItemClassificationType(
+            ItemClassification.ADVANCE_RULES[self.type_.value]
+        )
+
+    def rewind(self):
+        self.type_ = ItemClassificationType(
+            ItemClassification.REWIND_RULES[self.type_.value]
+        )
+
+
+class ItemHistory:
+    def __init__(self):
+        self._: List[ItemFeedback] = []
+
+    def __len__(self):
+        return len(self._)
+
+    def __getitem__(self, index):
+        return self._[index]
+
+    def append(self, item: ItemFeedback):
+        if not isinstance(item, ItemFeedback):
+            raise errors.InvalidItemFeedback()
+
+        self._.append(item)
 
 
 class Item:
