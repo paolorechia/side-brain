@@ -27,16 +27,78 @@ def test_item_classification_behavior():
     assert len(i.history) == 1
 
 
-def test_item_classification_behavior():
+@pytest.mark.parametrize(
+    "feedbacks, expected_classification",
+    [
+        ([], sidebrain.ItemClassificationType.E),
+        ([sidebrain.ItemFeedback.EASY], sidebrain.ItemClassificationType.D),
+        (
+            [sidebrain.ItemFeedback.EASY, sidebrain.ItemFeedback.EASY],
+            sidebrain.ItemClassificationType.C,
+        ),
+        (
+            [sidebrain.ItemFeedback.EASY, sidebrain.ItemFeedback.EASY],
+            sidebrain.ItemClassificationType.C,
+        ),
+        ([sidebrain.ItemFeedback.MEDIUM], sidebrain.ItemClassificationType.E),
+        (
+            [sidebrain.ItemFeedback.MEDIUM, sidebrain.ItemFeedback.MEDIUM],
+            sidebrain.ItemClassificationType.D,
+        ),
+        ([sidebrain.ItemFeedback.HARD], sidebrain.ItemClassificationType.E),
+        (
+            [sidebrain.ItemFeedback.HARD, sidebrain.ItemFeedback.HARD],
+            sidebrain.ItemClassificationType.E,
+        ),
+        (
+            [
+                sidebrain.ItemFeedback.HARD,
+                sidebrain.ItemFeedback.HARD,
+                sidebrain.ItemFeedback.HARD,
+            ],
+            sidebrain.ItemClassificationType.D,
+        ),
+        ([sidebrain.ItemFeedback.FAILED], sidebrain.ItemClassificationType.E),
+        (
+            [
+                sidebrain.ItemFeedback.EASY,
+                sidebrain.ItemFeedback.FAILED,
+            ],
+            sidebrain.ItemClassificationType.E,
+        ),
+        (
+            [
+                sidebrain.ItemFeedback.EASY,
+                sidebrain.ItemFeedback.FAILED,
+                sidebrain.ItemFeedback.EASY,
+            ],
+            sidebrain.ItemClassificationType.D,
+        ),
+        (
+            [
+                sidebrain.ItemFeedback.EASY,
+                sidebrain.ItemFeedback.FAILED,
+                sidebrain.ItemFeedback.MEDIUM,
+                sidebrain.ItemFeedback.MEDIUM,
+            ],
+            sidebrain.ItemClassificationType.D,
+        ),
+    ],
+)
+def test_item_classification_behavior(feedbacks, expected_classification):
     i = sidebrain.Item()
+    for f in feedbacks:
+        i.push_feedback(f)
 
+    assert i.classification.type_ == expected_classification
+
+
+def test_item_empty_history():
+    i = sidebrain.Item()
+    i._compute_classification()
     assert i.classification.type_ == sidebrain.ItemClassificationType.E
 
-    i.push_feedback(sidebrain.ItemFeedback.EASY)
-    assert i.classification.type_ == sidebrain.ItemClassificationType.D
-
-    i.push_feedback(sidebrain.ItemFeedback.FAILED)
-    assert i.classification.type_ == sidebrain.ItemClassificationType.E
+    assert i.history.__repr__()
 
 
 def test_item_text_type():

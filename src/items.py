@@ -66,8 +66,8 @@ class ItemHistory:
     def __getitem__(self, index):
         return self._[index]
 
-    def __iter__(self):
-        return self._.__iter__()
+    def __repr__(self):
+        return self._.__repr__()
 
     def append(self, item: ItemFeedback):
         if not isinstance(item, ItemFeedback):
@@ -82,6 +82,8 @@ class Item:
         self.hidden_side = HiddenSide()
         self.history = ItemHistory()
         self.classification = ItemClassification()
+        self.current_history_index = 0
+        self.current_points = 0
 
     def set_text_type(self, textual_hint: str):
         self.visible_side = TextSide(textual_hint)
@@ -104,19 +106,24 @@ class Item:
     def push_feedback(self, feedback: ItemFeedback):
         self.history.append(feedback)
         self._compute_classification()
+        self.current_history_index += 1
 
     def _compute_classification(self):
-        current_points = 0
-        for feedback in self.history:
+        if not self.history:
+            return
+        history_slice = self.history[self.current_history_index :]  # noqa: E203
+        for feedback in history_slice:
             if feedback == ItemFeedback.FAILED:
-                current_points = 0
+                self.current_points = 0
                 self.classification.rewind()
+                continue
             else:
                 points = FeedbackPointsRules.RULES[feedback.value]
-                current_points += points
-                if current_points >= FeedbackPointsRules.POINTS_TO_ADVANCE:
-                    self.classification.advance()
-                    current_points = 0
+                self.current_points += points
+
+            if self.current_points >= FeedbackPointsRules.POINTS_TO_ADVANCE:
+                self.classification.advance()
+                self.current_points = 0
 
 
 class VisibleSide:
