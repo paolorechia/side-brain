@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 
 
 class AnswerNotSetException(Exception):
@@ -6,6 +6,10 @@ class AnswerNotSetException(Exception):
 
 
 class EmptyAnswerException(Exception):
+    pass
+
+
+class VisibleSideNotShowableException(NotImplementedError):
     pass
 
 
@@ -17,7 +21,42 @@ class Item:
 
 class VisibleSide:
     def __init__(self):
-        pass
+        self.type_ = VisibleSide
+
+    def get(self):
+        raise VisibleSideNotShowableException("Please use a specific Visible Side")
+
+
+class TextSide(VisibleSide):
+    def __init__(self, text):
+        self.text = text
+
+    def get(self):
+        return self.text
+
+
+class ImageSide(VisibleSide):
+    def __init__(self, text):
+        self.text = text
+
+    def get(self):
+        return self.text
+
+
+class MultipleChoiceSide(VisibleSide):
+    def __init__(self, options: List[str]):
+        self.options = options
+
+    def get(self):
+        return self.options
+
+
+class FillInSide(VisibleSide):
+    def __init__(self, text):
+        self.text = text
+
+    def get(self):
+        return self.text
 
 
 class HiddenSide:

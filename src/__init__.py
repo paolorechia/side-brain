@@ -7,4 +7,9 @@ from .items import (
     AnswerDiff,
     AnswerNotSetException,
     EmptyAnswerException,
+    VisibleSideNotShowableException,
+    TextSide,
+    ImageSide,
+    MultipleChoiceSide,
+    FillInSide,
 )
