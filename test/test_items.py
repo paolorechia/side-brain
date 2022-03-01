@@ -1,5 +1,6 @@
 import pytest
 import src as sidebrain
+from datetime import datetime
 
 
 def test_item_is_instantiable():
@@ -91,6 +92,32 @@ def test_item_classification_behavior(feedbacks, expected_classification):
         i.push_feedback(f)
 
     assert i.classification.type_ == expected_classification
+
+
+@pytest.mark.parametrize(
+    "classification_type, expected_time_delta_in_days",
+    [
+        (sidebrain.ItemClassificationType.E, 0),
+        (sidebrain.ItemClassificationType.D, 1),
+        (sidebrain.ItemClassificationType.C, 7),
+        (sidebrain.ItemClassificationType.B, 14),
+        (sidebrain.ItemClassificationType.A, 28),
+        (sidebrain.ItemClassificationType.APLUS, 90),
+    ],
+)
+def test_item_wait_until(classification_type, expected_time_delta_in_days):
+    i = sidebrain.Item()
+    i.classification.type_ = classification_type
+    i.update_wait_time()
+    now = datetime.now()
+    day_diff = (i.wait_until - now).days
+    assert day_diff == expected_time_delta_in_days - 1
+    if expected_time_delta_in_days == 0:
+        assert now > i.wait_until
+    else:
+        assert i.wait_until.hour == 0
+        assert i.wait_until.minute == 0
+        assert i.wait_until.second == 0
 
 
 def test_item_empty_history():

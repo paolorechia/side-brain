@@ -3,6 +3,7 @@ from src.answer_diff import AnswerDiff
 import src.errors as errors
 
 import enum
+from datetime import datetime, timedelta
 import re
 
 _LINK_REGEX = re.compile("https://.+")
@@ -39,6 +40,14 @@ class ItemClassificationRules:
         "APLUS": "APLUS",
     }
     REWIND_RULES = {"APLUS": "D", "A": "D", "B": "D", "C": "E", "D": "E", "E": "E"}
+    WAIT_TIME_RULES = {
+        "E": 0,
+        "D": 1,
+        "C": 7,
+        "B": 14,
+        "A": 28,
+        "APLUS": 90,
+    }
 
 
 class ItemClassification:
@@ -84,6 +93,7 @@ class Item:
         self.classification = ItemClassification()
         self.current_history_index = 0
         self.current_points = 0
+        self.wait_until = datetime.now()
 
     def set_text_type(self, textual_hint: str):
         self.visible_side = TextSide(textual_hint)
@@ -107,6 +117,17 @@ class Item:
         self.history.append(feedback)
         self._compute_classification()
         self.current_history_index += 1
+
+    def update_wait_time(self):
+        now = datetime.now()
+        wait_time = ItemClassificationRules.WAIT_TIME_RULES[
+            self.classification.type_.value
+        ]
+        if wait_time == 0:
+            self.wait_until = now
+        else:
+            self.wait_until = now + timedelta(days=wait_time)
+            self.wait_until = self.wait_until.replace(hour=0, minute=0, second=0)
 
     def _compute_classification(self):
         if not self.history:
