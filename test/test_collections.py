@@ -1,4 +1,4 @@
-from src.collections import Collection
+from src import Collection
 
 
 def test_collection_is_instantiable():
