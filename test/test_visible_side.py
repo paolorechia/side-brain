@@ -7,7 +7,7 @@ def test_visible_side_is_initializable():
 
 
 def test_visible_side_does_not_implement_get():
-    with pytest.raises(sidebrain.VisibleSideNotShowableException):
+    with pytest.raises(sidebrain.errors.VisibleSideNotShowableException):
         sidebrain.VisibleSide().get()
 
 

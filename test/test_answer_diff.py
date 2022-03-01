@@ -21,5 +21,5 @@ def test_answer_diff():
 
 
 def test_answer_diff_empty_answer():
-    with pytest.raises(sidebrain.EmptyAnswerException):
+    with pytest.raises(sidebrain.errors.EmptyAnswerException):
         sidebrain.AnswerDiff(None, "abc")

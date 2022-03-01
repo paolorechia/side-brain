@@ -2,15 +2,6 @@ import pytest
 import src as sidebrain
 
 
-def test_hidden_side_is_correct_answer():
-    hidden = sidebrain.HiddenSide()
-
-    hidden.set_answer("my answer")
-
-    assert hidden.is_correct_answer("duh") == False
-    assert hidden.is_correct_answer("my answer") == True
-
-
 def test_hidden_side_check_answer():
     hidden = sidebrain.HiddenSide()
 
@@ -27,5 +18,5 @@ def test_hidden_side_check_answer():
 
 
 def test_hidden_side_check_answer_raises_exception():
-    with pytest.raises(sidebrain.AnswerNotSetException) as excp:
+    with pytest.raises(sidebrain.errors.AnswerNotSetException) as excp:
         check1 = sidebrain.HiddenSide().check_answer("my answer")
