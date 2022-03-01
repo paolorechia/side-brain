@@ -6,6 +6,14 @@ class EmptyAnswerException(Exception):
     pass
 
 
+class EmptyQuestionException(Exception):
+    pass
+
+
+class InvalidQuestionType(Exception):
+    pass
+
+
 class InvalidItemType(Exception):
     pass
 

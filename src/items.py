@@ -2,6 +2,10 @@ from typing import List, Optional
 from src.answer_diff import AnswerDiff
 import src.errors as errors
 
+import re
+
+_LINK_REGEX = re.compile("https://.+")
+
 
 class Item:
     def __init__(self):
@@ -38,7 +42,11 @@ class VisibleSide:
 
 
 class TextSide(VisibleSide):
-    def __init__(self, text):
+    def __init__(self, text: str):
+        if not text:
+            raise errors.EmptyQuestionException()
+        if not isinstance(text, str):
+            raise errors.InvalidQuestionType()
         self.text = text
 
     @property
@@ -50,19 +58,35 @@ class TextSide(VisibleSide):
 
 
 class ImageSide(VisibleSide):
-    def __init__(self, text):
-        self.text = text
+    def __init__(self, link: str):
+        if not link:
+            raise errors.EmptyQuestionException()
+        if not isinstance(link, str):
+            raise errors.InvalidQuestionType()
+        if not re.match(_LINK_REGEX, link):
+            raise errors.InvalidQuestionType()
+        self.link = link
 
     @property
     def name(self):
         return "Image"
 
     def get(self):
-        return self.text
+        return self.link
 
 
 class MultipleChoiceSide(VisibleSide):
     def __init__(self, options: List[str]):
+        if not options:
+            raise errors.EmptyQuestionException()
+        if not isinstance(options, list):
+            raise errors.InvalidQuestionType()
+        if len(options) < 2:
+            raise errors.InvalidQuestionType()
+        types_ = set([type(o) for o in options])
+        if len(types_) > 1:
+            raise errors.InvalidQuestionType()
+
         self.options = options
 
     @property
@@ -73,16 +97,13 @@ class MultipleChoiceSide(VisibleSide):
         return self.options
 
 
-class FillInSide(VisibleSide):
-    def __init__(self, text):
-        self.text = text
+class FillInSide(TextSide):
+    def __init__(self, *args):
+        super().__init__(*args)
 
     @property
     def name(self):
         return "FillIn"
-
-    def get(self):
-        return self.text
 
 
 class HiddenSide:
