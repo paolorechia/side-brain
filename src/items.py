@@ -52,7 +52,6 @@ class AnswerDiff:
             left_side = expected_answer
 
         for i, char_ in enumerate(right_side):
-            print(i)
             try:
                 if left_side[i] != char_:
                     self.matches = False
