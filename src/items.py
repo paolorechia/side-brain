@@ -1,10 +1,11 @@
-from typing import List, Optional
-from src.answer_diff import AnswerDiff
-import src.errors as errors
-
 import enum
-from datetime import datetime, timedelta
 import re
+from dataclasses import dataclass
+from datetime import datetime, timedelta
+from typing import List, Optional
+
+import src.errors as errors
+from src.answer_diff import AnswerDiff
 
 _LINK_REGEX = re.compile("https://.+")
 
@@ -85,6 +86,15 @@ class ItemHistory:
         self._.append(item)
 
 
+@dataclass
+class ItemStatistics:
+    total_attempts: int
+    easy_answers: int
+    medium_answers: int
+    hard_answers: int
+    failed_answers: int
+
+
 class Item:
     def __init__(self):
         self.visible_side = VisibleSide()
@@ -145,6 +155,20 @@ class Item:
             if self.current_points >= FeedbackPointsRules.POINTS_TO_ADVANCE:
                 self.classification.advance()
                 self.current_points = 0
+
+    def get_statistics(self) -> ItemStatistics:
+        easy = len([f for f in self.history if f == ItemFeedback.EASY])
+        medium = len([f for f in self.history if f == ItemFeedback.MEDIUM])
+        hard = len([f for f in self.history if f == ItemFeedback.HARD])
+        failed = len([f for f in self.history if f == ItemFeedback.FAILED])
+
+        return ItemStatistics(
+            total_attempts=len(self.history),
+            easy_answers=easy,
+            medium_answers=medium,
+            hard_answers=hard,
+            failed_answers=failed,
+        )
 
 
 class VisibleSide:
