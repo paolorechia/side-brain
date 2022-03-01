@@ -5,6 +5,7 @@ import src as sidebrain
 def test_item_is_instantiable():
     i = sidebrain.Item()
     assert i
+    assert isinstance(i.history, sidebrain.ItemHistory)
 
 
 def test_item_has_two_sides():
@@ -17,6 +18,25 @@ def test_item_starts_empty():
     i = sidebrain.Item()
     with pytest.raises(sidebrain.errors.VisibleSideNotShowableException):
         i.visible_side.get()
+
+
+def test_item_classification_behavior():
+    i = sidebrain.Item()
+    assert len(i.history) == 0
+    i.push_feedback(sidebrain.ItemFeedback.EASY)
+    assert len(i.history) == 1
+
+
+def test_item_classification_behavior():
+    i = sidebrain.Item()
+
+    assert i.classification.type_ == sidebrain.ItemClassificationType.E
+
+    i.push_feedback(sidebrain.ItemFeedback.EASY)
+    assert i.classification.type_ == sidebrain.ItemClassificationType.D
+
+    i.push_feedback(sidebrain.ItemFeedback.FAILED)
+    assert i.classification.type_ == sidebrain.ItemClassificationType.E
 
 
 def test_item_text_type():

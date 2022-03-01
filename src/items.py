@@ -24,8 +24,12 @@ class ItemClassificationType(enum.Enum):
     APLUS = "APLUS"
 
 
-class ItemClassification:
+class FeedbackPointsRules:
+    RULES = {"EASY": 3, "MEDIUM": 2, "HARD": 1, "FAILED": 0}
+    POINTS_TO_ADVANCE = 3
 
+
+class ItemClassificationRules:
     ADVANCE_RULES = {
         "E": "D",
         "D": "C",
@@ -36,17 +40,19 @@ class ItemClassification:
     }
     REWIND_RULES = {"APLUS": "D", "A": "D", "B": "D", "C": "E", "D": "E", "E": "E"}
 
+
+class ItemClassification:
     def __init__(self):
         self.type_ = ItemClassificationType.E
 
     def advance(self):
         self.type_ = ItemClassificationType(
-            ItemClassification.ADVANCE_RULES[self.type_.value]
+            ItemClassificationRules.ADVANCE_RULES[self.type_.value]
         )
 
     def rewind(self):
         self.type_ = ItemClassificationType(
-            ItemClassification.REWIND_RULES[self.type_.value]
+            ItemClassificationRules.REWIND_RULES[self.type_.value]
         )
 
 
@@ -60,6 +66,9 @@ class ItemHistory:
     def __getitem__(self, index):
         return self._[index]
 
+    def __iter__(self):
+        return self._.__iter__()
+
     def append(self, item: ItemFeedback):
         if not isinstance(item, ItemFeedback):
             raise errors.InvalidItemFeedback()
@@ -71,6 +80,8 @@ class Item:
     def __init__(self):
         self.visible_side = VisibleSide()
         self.hidden_side = HiddenSide()
+        self.history = ItemHistory()
+        self.classification = ItemClassification()
 
     def set_text_type(self, textual_hint: str):
         self.visible_side = TextSide(textual_hint)
@@ -89,6 +100,23 @@ class Item:
 
     def check_answer(self, given_answer: str) -> AnswerDiff:
         return self.hidden_side.check_answer(given_answer)
+
+    def push_feedback(self, feedback: ItemFeedback):
+        self.history.append(feedback)
+        self._compute_classification()
+
+    def _compute_classification(self):
+        current_points = 0
+        for feedback in self.history:
+            if feedback == ItemFeedback.FAILED:
+                current_points = 0
+                self.classification.rewind()
+            else:
+                points = FeedbackPointsRules.RULES[feedback.value]
+                current_points += points
+                if current_points >= FeedbackPointsRules.POINTS_TO_ADVANCE:
+                    self.classification.advance()
+                    current_points = 0
 
 
 class VisibleSide:
