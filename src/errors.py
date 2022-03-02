@@ -24,3 +24,7 @@ class InvalidItemFeedback(Exception):
 
 class VisibleSideNotShowableException(NotImplementedError):
     pass
+
+
+class NoItemToAnswerException(Exception):
+    pass
