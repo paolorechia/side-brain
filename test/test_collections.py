@@ -115,4 +115,22 @@ def test_collection_next_with_failed():
 
 
 def test_collection_ignores_items_with_wait_time():
-    raise NotImplementedError()
+    item = sidebrain.Item()
+    item.set_text_type("a")
+    item.set_answer("a")
+
+    wait = sidebrain.Item()
+    wait.set_text_type("wait")
+    wait.set_answer("wait")
+    wait.push_feedback(sidebrain.ItemFeedback.EASY)
+
+    c = sidebrain.Collection()
+    c.add(item)
+    c.add(wait)
+
+    item = c.next()
+    assert item.check_answer("a")
+    c.answer_item(sidebrain.ItemFeedback.EASY)
+
+    empty = c.next()
+    assert not empty
