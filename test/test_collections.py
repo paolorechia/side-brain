@@ -63,11 +63,10 @@ def test_collection_next_with_medium():
     item.set_answer("a")
 
     c.add(item)
-    for i in range(2):
-        _ = c.next()
-        print(i)
-        c.answer_item(sidebrain.ItemFeedback.MEDIUM)
-        c.answer_item(sidebrain.ItemFeedback.MEDIUM)
+
+    _ = c.next()
+    c.answer_item(sidebrain.ItemFeedback.MEDIUM)
+    c.answer_item(sidebrain.ItemFeedback.MEDIUM)
 
     # Finishes
     assert not c.next()
@@ -81,12 +80,12 @@ def test_collection_next_with_hard():
     item.set_answer("a")
 
     c.add(item)
-    for i in range(3):
-        _ = c.next()
-        print(i)
-        c.answer_item(sidebrain.ItemFeedback.HARD)
-        c.answer_item(sidebrain.ItemFeedback.HARD)
-        c.answer_item(sidebrain.ItemFeedback.HARD)
+
+    _ = c.next()
+
+    c.answer_item(sidebrain.ItemFeedback.HARD)
+    c.answer_item(sidebrain.ItemFeedback.HARD)
+    c.answer_item(sidebrain.ItemFeedback.HARD)
 
     # Finishes
     assert not c.next()
