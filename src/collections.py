@@ -2,6 +2,7 @@ from .items import Item, ItemFeedback
 from typing import Optional, List
 import src.errors as errors
 from datetime import datetime
+import random
 
 
 class Collection:
@@ -9,6 +10,9 @@ class Collection:
         self.items: List[Item] = []
         self.index = 0
         self.current = None
+
+    def shuffle(self):
+        random.shuffle(self.items)
 
     def add(self, item: Item):
         self.items.append(item)

@@ -134,3 +134,23 @@ def test_collection_ignores_items_with_wait_time():
 
     empty = c.next()
     assert not empty
+
+
+def test_collection_shuffles_change_orders():
+    c = sidebrain.Collection()
+
+    for i in range(100):
+        item = sidebrain.Item()
+        item.set_text_type(str(i))
+        item.set_answer(str(i))
+        c.add(item)
+
+    c.shuffle()
+    changed = False
+    for i in range(100):
+        item = c.next()
+        if item.visible_side.get() != str(i):
+            changed = True
+        c.answer_item(sidebrain.ItemFeedback.EASY)
+
+    assert changed
