@@ -1,8 +1,26 @@
-from .items import Item, ItemFeedback
-from typing import Optional, List
-import src.errors as errors
-from datetime import datetime
 import random
+from dataclasses import dataclass
+from datetime import datetime
+from typing import List, Optional
+
+import src.errors as errors
+
+from .items import Item, ItemFeedback
+
+
+@dataclass
+class CollectionStatistics:
+    total_attempts: int
+    easy_answers: int
+    medium_answers: int
+    hard_answers: int
+    failed_answers: int
+    a_plus_items: int
+    a_items: int
+    b_items: int
+    c_items: int
+    d_items: int
+    e_items: int
 
 
 class Collection:
