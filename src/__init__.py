@@ -1,5 +1,6 @@
 # flake8: noqa
-from .collections import Collection
+from .collections import Collection, CollectionStatistics
+
 from .items import (
     Item,
     VisibleSide,

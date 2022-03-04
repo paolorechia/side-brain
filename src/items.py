@@ -147,6 +147,7 @@ class Item:
             if feedback == ItemFeedback.FAILED:
                 self.current_points = 0
                 self.classification.rewind()
+                self.update_wait_time()
                 continue
             else:
                 points = FeedbackPointsRules.RULES[feedback.value]
@@ -154,6 +155,7 @@ class Item:
 
             if self.current_points >= FeedbackPointsRules.POINTS_TO_ADVANCE:
                 self.classification.advance()
+                self.update_wait_time()
                 self.current_points = 0
 
     def get_statistics(self) -> ItemStatistics:
