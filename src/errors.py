@@ -28,3 +28,7 @@ class VisibleSideNotShowableException(NotImplementedError):
 
 class NoItemToAnswerException(Exception):
     pass
+
+
+class InvalidCollectionName(Exception):
+    pass

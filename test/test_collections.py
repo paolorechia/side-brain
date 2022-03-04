@@ -7,6 +7,28 @@ def test_collection_starts_empty():
     assert len(c) == 0
 
 
+def test_collection_set_name():
+    c = sidebrain.Collection()
+    c.set_name("bah")
+    assert c.name == "bah"
+
+
+def test_collection_set_name_raises_errors():
+    c = sidebrain.Collection()
+
+    with pytest.raises(sidebrain.errors.InvalidCollectionName):
+        c.set_name("")
+
+    with pytest.raises(sidebrain.errors.InvalidCollectionName):
+        c.set_name(None)
+
+    with pytest.raises(sidebrain.errors.InvalidCollectionName):
+        c.set_name(123)
+
+    with pytest.raises(sidebrain.errors.InvalidCollectionName):
+        c.set_name(["ahoy"])
+
+
 def test_collection_add_item():
     c = sidebrain.Collection()
 
@@ -16,6 +38,19 @@ def test_collection_add_item():
 
     c.add(item)
     assert len(c) == 1
+
+
+def test_collection_add_item_raises_errors():
+    c = sidebrain.Collection()
+
+    with pytest.raises(sidebrain.errors.InvalidItemType):
+        c.add("garbage")
+
+    with pytest.raises(sidebrain.errors.InvalidItemType):
+        c.add(None)
+
+    with pytest.raises(sidebrain.errors.InvalidItemType):
+        c.add(123)
 
 
 def test_empty_collection_next_returns_none():
