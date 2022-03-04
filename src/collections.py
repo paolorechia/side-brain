@@ -7,6 +7,15 @@ import src.errors as errors
 
 from .items import Item, ItemFeedback, ItemStatistics, ItemClassificationType
 
+RANDOM_NAMES = [
+    "tuna",
+    "whisky",
+    "jar",
+    "balloon",
+    "name me plz",
+    "who are you??" "pleeeease, give me a name!",
+]
+
 
 @dataclass
 class CollectionStatistics:
@@ -28,6 +37,15 @@ class Collection:
         self.items: List[Item] = []
         self.index = 0
         self.current = None
+        self.name = random.choice(RANDOM_NAMES)
+
+    def set_name(self, name: str):
+        if not name:
+            raise errors.InvalidCollectionName()
+        if not isinstance(name, str):
+            raise errors.InvalidCollectionName()
+
+        self.name = name
 
     def get_statistics(self) -> CollectionStatistics:
         cstats = CollectionStatistics()
@@ -56,6 +74,11 @@ class Collection:
         random.shuffle(self.items)
 
     def add(self, item: Item):
+        if not item:
+            raise errors.InvalidItemType()
+        if not isinstance(item, Item):
+            raise errors.InvalidItemType()
+
         self.items.append(item)
 
     def next(self) -> Optional[Item]:
