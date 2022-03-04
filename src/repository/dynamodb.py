@@ -2,8 +2,8 @@ from .abstract import AbstractRepository
 
 
 class DynamoDBRepository(AbstractRepository):
-    def __init__(self, boto3_dynamodb_client):
-        self.boto3_dynamodb_client = boto3_dynamodb_client
+    def __init__(self, dynaborn_executor):
+        self.dynaborn_executor = dynaborn_executor
 
     def get(self):
         pass
