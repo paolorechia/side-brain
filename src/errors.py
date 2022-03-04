@@ -32,3 +32,11 @@ class NoItemToAnswerException(Exception):
 
 class InvalidCollectionName(Exception):
     pass
+
+
+class InvalidCollectionObject(Exception):
+    pass
+
+
+class NoCollectionToInspect(Exception):
+    pass

@@ -16,3 +16,4 @@ from .items import (
     ItemClassificationType,
 )
 from .answer_diff import AnswerDiff
+from .suggestion import Suggestions
