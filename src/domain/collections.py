@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import List, Optional
 
-import src.errors as errors
+import src.domain.errors as errors
 
 from .items import Item, ItemFeedback, ItemStatistics, ItemClassificationType
 
