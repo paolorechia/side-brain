@@ -5,22 +5,22 @@ from typing import List, Optional
 
 import src.errors as errors
 
-from .items import Item, ItemFeedback
+from .items import Item, ItemFeedback, ItemStatistics, ItemClassificationType
 
 
 @dataclass
 class CollectionStatistics:
-    total_attempts: int
-    easy_answers: int
-    medium_answers: int
-    hard_answers: int
-    failed_answers: int
-    a_plus_items: int
-    a_items: int
-    b_items: int
-    c_items: int
-    d_items: int
-    e_items: int
+    total_attempts: int = 0
+    easy_answers: int = 0
+    medium_answers: int = 0
+    hard_answers: int = 0
+    failed_answers: int = 0
+    a_plus_items: int = 0
+    a_items: int = 0
+    b_items: int = 0
+    c_items: int = 0
+    d_items: int = 0
+    e_items: int = 0
 
 
 class Collection:
@@ -28,6 +28,29 @@ class Collection:
         self.items: List[Item] = []
         self.index = 0
         self.current = None
+
+    def get_statistics(self) -> CollectionStatistics:
+        cstats = CollectionStatistics()
+        for item in self.items:
+            istats: ItemStatistics = item.get_statistics()
+            cstats.total_attempts += istats.total_attempts
+            cstats.easy_answers += istats.easy_answers
+            cstats.medium_answers += istats.medium_answers
+            cstats.hard_answers += istats.hard_answers
+            cstats.failed_answers += istats.failed_answers
+            if item.classification.type_ == ItemClassificationType.APLUS:
+                cstats.a_plus_items += 1
+            elif item.classification.type_ == ItemClassificationType.A:
+                cstats.a_items += 1
+            elif item.classification.type_ == ItemClassificationType.B:
+                cstats.b_items += 1
+            elif item.classification.type_ == ItemClassificationType.C:
+                cstats.c_items += 1
+            elif item.classification.type_ == ItemClassificationType.D:
+                cstats.d_items += 1
+            elif item.classification.type_ == ItemClassificationType.E:
+                cstats.e_items += 1
+        return cstats
 
     def shuffle(self):
         random.shuffle(self.items)
@@ -63,9 +86,11 @@ class Collection:
 
         current_classification = self.current.classification.type_
         self.current.push_feedback(feedback)
-        self.index += 1
+
         if self.current.classification.type_ == current_classification:
-            self.items.append(self.current)
+            self.items.append(self.items.pop(self.index))
+        else:
+            self.index += 1
 
     def __len__(self) -> int:
         return len(self.items)
