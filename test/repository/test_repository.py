@@ -3,19 +3,8 @@ import boto3
 from unittest.mock import Mock
 
 import src.domain as domain
-from src.repository.dynamodb import DynamoDBRepository
 from src.repository.memory import MemoryRepository
 from src.repository.errors import ItemNotFound, CollectionNotFound, CollectionNotEmpty
-
-
-@pytest.fixture
-def boto3_dynamodb_client():
-    yield boto3.client("dynamodb")
-
-
-def test_dynamodb_repository_exists(boto3_dynamodb_client):
-    r = DynamoDBRepository(boto3_dynamodb_client)
-    assert r
 
 
 def test_memory_repository_exists():
