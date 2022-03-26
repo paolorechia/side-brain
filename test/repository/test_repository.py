@@ -58,6 +58,9 @@ def test_memory_repository_item_ops():
 def test_memory_repository_item_errors():
     r = MemoryRepository(Mock())
 
+    with pytest.raises(TypeError):
+        r.item_add(domain.Collection())
+
     with pytest.raises(ItemNotFound):
         r.item_get("a")
 
@@ -100,6 +103,9 @@ def test_memory_repository_collection_ops():
 
 def test_memory_repository_collection_errors():
     r = MemoryRepository(Mock())
+
+    with pytest.raises(TypeError):
+        r.collection_add(domain.Item())
 
     with pytest.raises(CollectionNotFound):
         r.collection_get("a")

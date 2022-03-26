@@ -17,6 +17,9 @@ class MemoryRepository(AbstractRepository):
         raise ItemNotFound()
 
     def item_add(self, item: domain.Item) -> str:
+        if not isinstance(item, domain.Item):
+            raise TypeError()
+
         new_id = str(uuid4())
         self.items[new_id] = item
         return new_id
@@ -39,6 +42,9 @@ class MemoryRepository(AbstractRepository):
         raise CollectionNotFound()
 
     def collection_add(self, collection: domain.Collection) -> str:
+        if not isinstance(collection, domain.Collection):
+            raise TypeError()
+
         new_id = str(uuid4())
         self.collections[new_id] = collection
         return new_id
