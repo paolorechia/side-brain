@@ -1,5 +1,5 @@
 from typing import Optional
-import src.errors as errors
+import src.domain.errors as errors
 
 
 class AnswerDiff:

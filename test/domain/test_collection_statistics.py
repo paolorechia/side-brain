@@ -1,10 +1,10 @@
-import src as sidebrain
+import src.domain as domain
 
 
 def test_collection_starts_with_empty_stats():
-    c = sidebrain.Collection()
+    c = domain.Collection()
 
-    assert c.get_statistics() == sidebrain.CollectionStatistics(
+    assert c.get_statistics() == domain.CollectionStatistics(
         total_attempts=0,
         easy_answers=0,
         medium_answers=0,
@@ -20,8 +20,8 @@ def test_collection_starts_with_empty_stats():
 
 
 def test_collection_statistics():
-    c = sidebrain.Collection()
-    expected_collection = sidebrain.CollectionStatistics(
+    c = domain.Collection()
+    expected_collection = domain.CollectionStatistics(
         total_attempts=0,
         easy_answers=0,
         medium_answers=0,
@@ -35,48 +35,48 @@ def test_collection_statistics():
         e_items=5,
     )
     for i in range(expected_collection.a_plus_items):
-        item = sidebrain.Item()
+        item = domain.Item()
         item.set_text_type(str(i))
         item.set_answer(str(i))
-        item.classification.type_ = sidebrain.ItemClassificationType.APLUS
+        item.classification.type_ = domain.ItemClassificationType.APLUS
         c.add(item)
     for i in range(expected_collection.a_items):
-        item = sidebrain.Item()
+        item = domain.Item()
         item.set_text_type(str(i))
         item.set_answer(str(i))
-        item.classification.type_ = sidebrain.ItemClassificationType.A
+        item.classification.type_ = domain.ItemClassificationType.A
         c.add(item)
     for i in range(expected_collection.b_items):
-        item = sidebrain.Item()
+        item = domain.Item()
         item.set_text_type(str(i))
         item.set_answer(str(i))
-        item.classification.type_ = sidebrain.ItemClassificationType.B
+        item.classification.type_ = domain.ItemClassificationType.B
         c.add(item)
     for i in range(expected_collection.c_items):
-        item = sidebrain.Item()
+        item = domain.Item()
         item.set_text_type(str(i))
         item.set_answer(str(i))
-        item.classification.type_ = sidebrain.ItemClassificationType.C
+        item.classification.type_ = domain.ItemClassificationType.C
         c.add(item)
     for i in range(expected_collection.d_items):
-        item = sidebrain.Item()
+        item = domain.Item()
         item.set_text_type(str(i))
         item.set_answer(str(i))
-        item.classification.type_ = sidebrain.ItemClassificationType.D
+        item.classification.type_ = domain.ItemClassificationType.D
         c.add(item)
     for i in range(expected_collection.e_items):
-        item = sidebrain.Item()
+        item = domain.Item()
         item.set_text_type(str(i))
         item.set_answer(str(i))
-        item.classification.type_ = sidebrain.ItemClassificationType.E
+        item.classification.type_ = domain.ItemClassificationType.E
         c.add(item)
 
     assert c.get_statistics() == expected_collection
 
 
 def test_collection_statistics_2():
-    c = sidebrain.Collection()
-    expected_collection = sidebrain.CollectionStatistics(
+    c = domain.Collection()
+    expected_collection = domain.CollectionStatistics(
         total_attempts=7,
         easy_answers=1,
         medium_answers=2,
@@ -91,26 +91,26 @@ def test_collection_statistics_2():
     )
 
     for i in range(expected_collection.d_items + expected_collection.e_items):
-        item = sidebrain.Item()
+        item = domain.Item()
         item.set_text_type(str(i))
         item.set_answer(str(i))
         c.add(item)
 
     for i in range(expected_collection.easy_answers):
         c.next()
-        c.answer_item(sidebrain.ItemFeedback.EASY)
+        c.answer_item(domain.ItemFeedback.EASY)
 
     for i in range(expected_collection.medium_answers):
         c.next()
-        c.answer_item(sidebrain.ItemFeedback.MEDIUM)
+        c.answer_item(domain.ItemFeedback.MEDIUM)
 
     for i in range(expected_collection.hard_answers):
         c.next()
-        c.answer_item(sidebrain.ItemFeedback.HARD)
+        c.answer_item(domain.ItemFeedback.HARD)
 
     for i in range(expected_collection.failed_answers):
         c.next()
-        c.answer_item(sidebrain.ItemFeedback.FAILED)
+        c.answer_item(domain.ItemFeedback.FAILED)
 
     print(c.items)
     assert c.get_statistics() == expected_collection
