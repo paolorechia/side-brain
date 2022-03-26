@@ -33,35 +33,29 @@ def test_collection_iteration():
     result = service.create_collection(name="Some name")
     uuid = result["uuid"]
 
-
     service.add_item_to_collection(
-        name="bah",
-        item_type="text",
-        answer=["answer"],
-        collection_uuid=uuid
+        name="bah", item_type="text", answer=["answer"], collection_uuid=uuid
     )
 
     service.add_item_to_collection(
         name="image_item",
         item_type="image",
         answer=["base64mock"],
-                collection_uuid=uuid
-
+        collection_uuid=uuid,
     )
 
     service.add_item_to_collection(
         name="bah",
         item_type="multiple_choice",
         answer=["option1", "option2"],
-                collection_uuid=uuid
-
+        collection_uuid=uuid,
     )
 
     service.add_item_to_collection(
         name="bla ble ___ blo blu",
         item_type="fillin",
         answer=["bli"],
-        collection_uuid=uuid
+        collection_uuid=uuid,
     )
 
 
@@ -80,10 +74,7 @@ def test_suggestion_service():
     uuid = result["uuid"]
 
     service.add_item_to_collection(
-        name="bah",
-        item_type="text",
-        answer=["answer"],
-        collection_uuid=uuid
+        name="bah", item_type="text", answer=["answer"], collection_uuid=uuid
     )
 
     suggestions = service.suggest(uuid)
