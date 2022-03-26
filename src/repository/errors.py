@@ -4,3 +4,7 @@ class ItemNotFound(Exception):
 
 class CollectionNotFound(Exception):
     pass
+
+
+class CollectionNotEmpty(Exception):
+    pass
