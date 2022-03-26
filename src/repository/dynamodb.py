@@ -1,12 +1,32 @@
 from .abstract import AbstractRepository
+import src.domain as domain
+from typing import List, Tuple
 
 
 class DynamoDBRepository(AbstractRepository):
-    def __init__(self, dynaborn_executor):
-        self.dynaborn_executor = dynaborn_executor
+    def __init__(self, boto3_dynamodb_client):
+        self.ddb_client = boto3_dynamodb_client
 
-    def get(self):
+    def item_get(self, uuid: str) -> domain.Item:
+        raise NotImplementedError()
+
+    def item_add(self, item: domain.Item) -> str:
+        return ""
+
+    def item_get_all(self) -> List[Tuple[str, domain.Item]]:
+        return []
+
+    def item_delete(self, uuid: str) -> None:
         pass
 
-    def add(self):
+    def collection_get(self, uuid: str) -> domain.Collection:
+        raise NotImplementedError()
+
+    def collection_add(self, collection: domain.Collection) -> str:
+        return ""
+
+    def collection_get_all(self) -> List[Tuple[str, domain.Collection]]:
+        return []
+
+    def collection_delete(self, uuid: str) -> None:
         pass
