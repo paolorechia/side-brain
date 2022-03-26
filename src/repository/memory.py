@@ -2,7 +2,7 @@ from .abstract import AbstractRepository
 from .errors import ItemNotFound, CollectionNotFound, CollectionNotEmpty
 from uuid import uuid4
 import src.domain as domain
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Set
 
 
 class MemoryRepository(AbstractRepository):
@@ -10,29 +10,42 @@ class MemoryRepository(AbstractRepository):
         self.stub_adapter = stub_adapter
         self.items: Dict[str, domain.Item] = {}
         self.collections: Dict[str, domain.Collection] = {}
+        self.relationships: Dict[str, Set[str]] = {}
 
     def item_get(self, uuid: str) -> domain.Item:
         if uuid in self.items:
             return self.items[uuid]
         raise ItemNotFound()
 
-    def item_add(self, item: domain.Item) -> str:
+    def item_add(self, item: domain.Item, collection_uuid: str) -> str:
         if not isinstance(item, domain.Item):
             raise TypeError()
 
+        if collection_uuid not in self.collections:
+            raise CollectionNotFound()
+
         new_id = str(uuid4())
         self.items[new_id] = item
+        self.relationships[collection_uuid].add(new_id)
         return new_id
 
-    def item_get_all(self) -> List[Tuple[str, domain.Item]]:
+    def item_get_all(self, collection_uuid: str) -> List[Tuple[str, domain.Item]]:
         result = []
+        if collection_uuid not in self.relationships:
+            raise CollectionNotFound()
+
+        in_collection_uuids = self.relationships[collection_uuid]
         for key, item in self.items.items():
-            result.append((key, item))
+            if key in in_collection_uuids:
+                result.append((key, item))
         return result
 
-    def item_delete(self, uuid: str) -> None:
+    def item_delete(self, uuid: str, collection_uuid: str) -> None:
+        if collection_uuid not in self.relationships:
+            raise CollectionNotFound()
         if uuid in self.items:
             del self.items[uuid]
+            self.relationships[collection_uuid].remove(uuid)
             return
         raise ItemNotFound()
 
@@ -47,6 +60,7 @@ class MemoryRepository(AbstractRepository):
 
         new_id = str(uuid4())
         self.collections[new_id] = collection
+        self.relationships[new_id] = set()
         return new_id
 
     def collection_get_all(self) -> List[Tuple[str, domain.Collection]]:

@@ -10,13 +10,13 @@ class DynamoDBRepository(AbstractRepository):
     def item_get(self, uuid: str) -> domain.Item:
         raise NotImplementedError()
 
-    def item_add(self, item: domain.Item) -> str:
+    def item_add(self, item: domain.Item, collection_uuid: str) -> str:
         return ""
 
-    def item_get_all(self) -> List[Tuple[str, domain.Item]]:
+    def item_get_all(self, collection_uuid: str) -> List[Tuple[str, domain.Item]]:
         return []
 
-    def item_delete(self, uuid: str) -> None:
+    def item_delete(self, uuid: str, collection_uuid: str) -> None:
         pass
 
     def collection_get(self, uuid: str) -> domain.Collection:
