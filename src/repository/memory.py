@@ -29,6 +29,13 @@ class MemoryRepository(AbstractRepository):
         self.relationships[collection_uuid].add(new_id)
         return new_id
 
+    def item_update(self, uuid: str, item: domain.Item):
+        if uuid not in self.items:
+            raise ItemNotFound()
+        if not isinstance(item, domain.Item):
+            raise TypeError()
+        self.items[uuid] = item
+
     def item_get_all(self, collection_uuid: str) -> List[Tuple[str, domain.Item]]:
         result = []
         if collection_uuid not in self.relationships:
@@ -62,6 +69,13 @@ class MemoryRepository(AbstractRepository):
         self.collections[new_id] = collection
         self.relationships[new_id] = set()
         return new_id
+
+    def collection_rename(self, uuid: str, name: str):
+        if not isinstance(name, str) or not name:
+            raise TypeError()
+        if uuid not in self.collections:
+            raise CollectionNotFound()
+        self.collections[uuid].name = name
 
     def collection_get_all(self) -> List[Tuple[str, domain.Collection]]:
         result = []

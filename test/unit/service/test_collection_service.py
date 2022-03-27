@@ -77,16 +77,10 @@ def test_collection_iteration():
         name="bah", item_type="text", answer=["answer"], collection_uuid=uuid
     )
 
-    result = service.get_collection_iteration(uuid=uuid)
+    item = service.get_next_collection_item(collection_uuid=uuid)
+    assert item
 
-    iteration_uuid = result["uuid"]
-    assert iteration_uuid
-    iteration = result["iteration"]
-    assert iteration
-
-    assert iteration.current_item
-
-    service.give_feedback(uuid=iteration_uuid, feedback="E")
+    service.give_feedback_to_item(collection_uuid=uuid, feedback="E")
 
 
 def test_statistics_service():
