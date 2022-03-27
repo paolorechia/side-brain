@@ -3,6 +3,10 @@ from .errors import ItemNotFound, CollectionNotFound, CollectionNotEmpty
 from uuid import uuid4
 import src.domain as domain
 from typing import Dict, List, Tuple, Set
+import logging
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 class MemoryRepository(AbstractRepository):
@@ -13,6 +17,10 @@ class MemoryRepository(AbstractRepository):
         self.relationships: Dict[str, Set[str]] = {}
 
     def item_get(self, uuid: str) -> domain.Item:
+        logger.debug("Getting item: %s", uuid)
+        logger.debug("Current items: %s", self.items)
+        if not uuid or not isinstance(uuid, str):
+            raise TypeError()
         if uuid in self.items:
             return self.items[uuid]
         raise ItemNotFound()
@@ -21,12 +29,13 @@ class MemoryRepository(AbstractRepository):
         if not isinstance(item, domain.Item):
             raise TypeError()
 
-        if collection_uuid not in self.collections:
-            raise CollectionNotFound()
+        collection = self.collection_get(collection_uuid)
 
+        collection.add(item)
         new_id = str(uuid4())
         self.items[new_id] = item
         self.relationships[collection_uuid].add(new_id)
+
         return new_id
 
     def item_update(self, uuid: str, item: domain.Item):
@@ -53,12 +62,15 @@ class MemoryRepository(AbstractRepository):
         if uuid in self.items:
             del self.items[uuid]
             self.relationships[collection_uuid].remove(uuid)
+            self.collections[collection_uuid].items = self.item_get_all(collection_uuid)
             return
         raise ItemNotFound()
 
     def collection_get(self, uuid: str) -> domain.Collection:
         if uuid in self.collections:
-            return self.collections[uuid]
+            collection = self.collections[uuid]
+            collection.items = self.item_get_all(uuid)
+            return collection
         raise CollectionNotFound()
 
     def collection_add(self, collection: domain.Collection) -> str:

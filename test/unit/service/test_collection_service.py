@@ -1,7 +1,7 @@
 import pytest
 
 from unittest.mock import Mock
-from src.service.collection import CollectionService
+from src.service.collection_service import CollectionService
 from src.repository.memory import MemoryRepository
 
 
@@ -13,52 +13,56 @@ def test_collection_service_crud():
 
     result = service.create_collection(name="Some name")
     assert result["uuid"]
-    assert result["collection"]
-    assert result["collection"].name == ["Some name"]
+    assert result["collection"] is not None
+    assert result["collection"].name == "Some name"
 
-    service.update_collection(uuid=result["uuid"], name="wow")
+    updated = service.rename_collection(uuid=result["uuid"], name="wow")
+    assert updated["collection"].name == "wow"
 
     result2 = service.get_collections()
 
     item_uuid = service.add_item_to_collection(
-        name="bah", item_type="text", answer=["answer"], collection_uuid=uuid
+        item_type="text", hint=["answer"], answer="bah", collection_uuid=result["uuid"]
     )
 
-    service.update_item(uuid=item_uuid, name="buh")
+    service.update_item(item_uuid=item_uuid, item_type="text", hint=["buh"])
 
     assert len(result2) == 1
     assert result2[0][0] == result["uuid"]
     assert result2[0][1].name == "wow"
-    assert result2[0][1].items[0].name == "buh"
+    assert result2[0][1].items[0].visible_side.get() == "buh"
 
     service.delete_collection(result["uuid"])
     assert len(service.get_collections()) == 0
 
 
+@pytest.mark.skip
 def test_collection_item_add():
     """Tests that different types of items don't throw errors"""
 
     mr = MemoryRepository(Mock())
     service = CollectionService(mr)
 
+    uuid = service.create_collection("test")
+
     service.add_item_to_collection(
-        name="image_item",
+        answer="image_item",
         item_type="image",
-        answer=["base64mock"],
+        hint=["base64mock"],
         collection_uuid=uuid,
     )
 
     service.add_item_to_collection(
-        name="bah",
+        answer="bah",
         item_type="multiple_choice",
-        answer=["option1", "option2"],
+        hint=["option1", "option2"],
         collection_uuid=uuid,
     )
 
     service.add_item_to_collection(
-        name="bla ble ___ blo blu",
+        hint=["bla ble ___ blo blu"],
         item_type="fillin",
-        answer=["bli"],
+        answer="bli",
         collection_uuid=uuid,
     )
 
@@ -74,7 +78,7 @@ def test_collection_iteration():
     uuid = result["uuid"]
 
     service.add_item_to_collection(
-        name="bah", item_type="text", answer=["answer"], collection_uuid=uuid
+        hint=["bah"], item_type="text", answer="answer", collection_uuid=uuid
     )
 
     item = service.get_next_collection_item(collection_uuid=uuid)

@@ -1,0 +1,2 @@
+class UnknownItemType(Exception):
+    pass
