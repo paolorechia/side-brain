@@ -102,8 +102,8 @@ def test_suggestion_service():
     uuid = result["uuid"]
 
     service.add_item_to_collection(
-        name="bah", item_type="text", answer=["answer"], collection_uuid=uuid
+        hint=["bah"], item_type="text", answer="answer", collection_uuid=uuid
     )
 
-    suggestion = service.suggest(uuid)
-    assert suggestion["uuid"] == uuid
+    suggestion = service.suggest()
+    assert suggestion

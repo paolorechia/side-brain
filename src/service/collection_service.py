@@ -90,3 +90,15 @@ class CollectionService:
 
         logger.info("Updating feedback on item: %s", current_uuid)
         self.repository.item_update(current_uuid, item)  # Use UUID
+
+    def get_collection_statistics(self, uuid: str):
+        col = self.repository.collection_get(uuid)
+        return col.get_statistics()
+
+    def suggest(self):
+        tuples = self.repository.collection_get_all()
+        suggestions = domain.Suggestions()
+        for t in tuples:
+            suggestions.add(t[1])
+        
+        return suggestions.suggest()
