@@ -26,6 +26,7 @@ class MemoryRepository(AbstractRepository):
         raise ItemNotFound()
 
     def item_add(self, item: domain.Item, collection_uuid: str) -> str:
+        logger.debug("Adding item :%s", item)
         if not isinstance(item, domain.Item):
             raise TypeError()
 
@@ -33,8 +34,12 @@ class MemoryRepository(AbstractRepository):
 
         collection.add(item)
         new_id = str(uuid4())
+        logger.debug("New item UUID:%s", new_id)
+
         self.items[new_id] = item
         self.relationships[collection_uuid].add(new_id)
+
+        logger.debug("Items: %s", self.items)
 
         return new_id
 
@@ -62,14 +67,21 @@ class MemoryRepository(AbstractRepository):
         if uuid in self.items:
             del self.items[uuid]
             self.relationships[collection_uuid].remove(uuid)
-            self.collections[collection_uuid].items = self.item_get_all(collection_uuid)
+            db_items = self.item_get_all(collection_uuid)
+            self.collections[collection_uuid].items = [i[1] for i in db_items]
+            self.collections[collection_uuid]._db_items = db_items
             return
         raise ItemNotFound()
 
     def collection_get(self, uuid: str) -> domain.Collection:
+        logger.debug("Getting collection: %s", uuid)
+
         if uuid in self.collections:
             collection = self.collections[uuid]
-            collection.items = self.item_get_all(uuid)
+            db_items = self.item_get_all(uuid)
+            collection.items = [i[1] for i in db_items]
+            collection._db_items = db_items
+
             return collection
         raise CollectionNotFound()
 
@@ -88,6 +100,13 @@ class MemoryRepository(AbstractRepository):
         if uuid not in self.collections:
             raise CollectionNotFound()
         self.collections[uuid].name = name
+
+    def collection_update_index(self, uuid: str, index: int):
+        if not isinstance(index, int):
+            raise TypeError()
+        if uuid not in self.collections:
+            raise CollectionNotFound()
+        self.collections[uuid].index = index
 
     def collection_get_all(self) -> List[Tuple[str, domain.Collection]]:
         result = []

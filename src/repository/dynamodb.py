@@ -31,6 +31,9 @@ class DynamoDBRepository(AbstractRepository):
     def collection_rename(self, uuid: str, name: str):
         pass
 
+    def collection_update_index(self, uuid: str, index: int):
+        pass
+
     def collection_get_all(self) -> List[Tuple[str, domain.Collection]]:
         return []
 

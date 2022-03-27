@@ -40,6 +40,10 @@ class AbstractRepository(abc.ABC):
         raise NotImplementedError()
 
     @abc.abstractmethod
+    def collection_update_index(self, uuid: str, index: int):
+        raise NotImplementedError()
+
+    @abc.abstractmethod
     def collection_get_all(self) -> List[Tuple[str, domain.Collection]]:
         raise NotImplementedError()
 

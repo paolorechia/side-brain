@@ -1,7 +1,11 @@
 from src.repository.abstract import AbstractRepository
 import src.domain as domain
 from typing import List
-from .errors import UnknownItemType
+from .errors import UnknownItemType, FailedToGiveFeedback
+import logging
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 class CollectionService:
     def __init__(self, repository: AbstractRepository):
@@ -35,7 +39,6 @@ class CollectionService:
             self.set_item_type(item, item_type, hint)
         self.repository.item_update(item_uuid, item)
 
-
     def set_item_type(self, i: domain.Item, item_type: str, hint: List[str]):
         upper_type = item_type.upper()
         if upper_type == "TEXT":
@@ -49,7 +52,7 @@ class CollectionService:
         else:
             raise UnknownItemType(item_type)
 
-    def delete_collection(self, collection_uuid):
+    def delete_collection(self, collection_uuid: str):
         self.repository.collection_get(collection_uuid)
         items = self.repository.item_get_all(collection_uuid)
         for item in items:
@@ -57,5 +60,33 @@ class CollectionService:
         
         self.repository.collection_delete(collection_uuid)
 
-    def get_next_collection_item(self):
-        pass
+    def get_next_collection_item(self, collection_uuid: str):
+        logger.info("Getting next collection item: %s", collection_uuid)
+        collection = self.repository.collection_get(collection_uuid)
+        next_ = collection.next()
+        logger.info("Current collection index: %s", collection.index)
+        self.repository.collection_update_index(collection_uuid, collection.index)
+        return next_
+
+    def give_feedback_to_item(self, collection_uuid: str, feedback: str):
+        if not isinstance(feedback, str) or not feedback:
+            raise TypeError()
+        upper_feedback = feedback.upper()
+
+        enum_feedback = domain.ItemFeedback(upper_feedback)
+
+        collection = self.repository.collection_get(collection_uuid)
+        collection.answer_item(enum_feedback)
+
+        item = collection.current
+
+        # Get DB relationship
+        # Database details are leaking into the model here
+        # Not ideal, but fixing it would require a major rework
+        try:
+            current_uuid = collection._db_items[collection.index - 1][0]
+        except IndexError:
+            raise FailedToGiveFeedback()
+
+        logger.info("Updating feedback on item: %s", current_uuid)
+        self.repository.item_update(current_uuid, item)  # Use UUID

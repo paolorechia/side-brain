@@ -84,7 +84,7 @@ def test_collection_iteration():
     item = service.get_next_collection_item(collection_uuid=uuid)
     assert item
 
-    service.give_feedback_to_item(collection_uuid=uuid, feedback="E")
+    service.give_feedback_to_item(collection_uuid=uuid, feedback="EASY")
 
 
 def test_statistics_service():
