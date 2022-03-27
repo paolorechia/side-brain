@@ -1,7 +1,7 @@
 import random
 from dataclasses import dataclass
 from datetime import datetime
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 import src.domain.errors as errors
 
@@ -35,6 +35,7 @@ class CollectionStatistics:
 class Collection:
     def __init__(self):
         self.items: List[Item] = []
+        self._db_items: List[Tuple[str, Item]] = []
         self.index = 0
         self.current = None
         self.name = random.choice(RANDOM_NAMES)

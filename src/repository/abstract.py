@@ -16,6 +16,10 @@ class AbstractRepository(abc.ABC):
         raise NotImplementedError()
 
     @abc.abstractmethod
+    def item_update(self, uuid: str, item: domain.Item) -> None:
+        raise NotImplementedError()
+
+    @abc.abstractmethod
     def item_get_all(self, collection_uuid: str) -> List[Tuple[str, domain.Item]]:
         raise NotImplementedError()
 
@@ -32,9 +36,21 @@ class AbstractRepository(abc.ABC):
         raise NotImplementedError()
 
     @abc.abstractmethod
+    def collection_rename(self, uuid: str, name: str):
+        raise NotImplementedError()
+
+    @abc.abstractmethod
+    def collection_update_index(self, uuid: str, index: int):
+        raise NotImplementedError()
+
+    @abc.abstractmethod
     def collection_get_all(self) -> List[Tuple[str, domain.Collection]]:
         raise NotImplementedError()
 
     @abc.abstractmethod
     def collection_delete(self, uuid: str) -> None:
+        raise NotImplementedError()
+
+    @abc.abstractmethod
+    def upload_image(self, binary: bytes) -> str:
         raise NotImplementedError()

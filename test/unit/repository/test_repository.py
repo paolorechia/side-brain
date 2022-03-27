@@ -51,11 +51,17 @@ def test_memory_repository_collection_errors():
     with pytest.raises(TypeError):
         r.collection_add(domain.Item())
 
+    with pytest.raises(TypeError):
+        r.collection_rename("a", None)
+
     with pytest.raises(CollectionNotFound):
         r.collection_get("a")
 
     with pytest.raises(CollectionNotFound):
         r.collection_delete("b")
+
+    with pytest.raises(CollectionNotFound):
+        r.collection_rename("c", "d")
 
     c = domain.Collection()
     i = domain.Item()
@@ -83,6 +89,9 @@ def test_memory_repository_item_ops():
     assert i == i2
 
     uuid_2 = r.item_add(domain.Item(), col_uuid)
+
+    updated = domain.Item()
+    r.item_update(uuid_2, updated)
 
     i3 = r.item_get(uuid_2)
 
@@ -122,8 +131,16 @@ def test_memory_repository_item_errors():
         r.item_get("a")
 
     with pytest.raises(ItemNotFound):
+        r.item_update("a", domain.Item())
+
+    with pytest.raises(ItemNotFound):
         cuuid = r.collection_add(domain.Collection())
         r.item_delete("b", cuuid)
+
+    with pytest.raises(TypeError):
+        cuuid = r.collection_add(domain.Collection())
+        uuid = r.item_add(domain.Item(), cuuid)
+        r.item_update(uuid, "asd")
 
 
 def test_memory_repository_item_collection_separation():
@@ -149,3 +166,10 @@ def test_memory_repository_item_collection_separation():
 
     assert len(r.item_get_all(col_uuid)) == 3
     assert len(r.item_get_all(col_uuid2)) == 1
+
+
+def test_image_link():
+    r = MemoryRepository(Mock())
+
+    link = r.upload_image("blabla")
+    assert link
