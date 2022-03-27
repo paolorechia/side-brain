@@ -31,6 +31,7 @@ class CollectionService:
         i = domain.Item()
         i.set_answer(answer)
         self.set_item_type(i, item_type, hint)
+        logger.info("Adding item: %s to collection (%s)", i, collection_uuid)
         return self.repository.item_add(i, collection_uuid)
 
     def update_item(self, item_uuid: str, item_type: str = None, hint: List[str] = None, answer: str = None):
@@ -44,10 +45,11 @@ class CollectionService:
         if upper_type == "TEXT":
             i.set_text_type(hint[0])
         elif upper_type == "IMAGE":
-            raise NotImplementedError()
+            link = self.repository.upload_image(hint[0])
+            i.set_image_type(link)
         elif upper_type == "FILL_IN":
             i.set_fill_in_type(hint[0])
-        elif upper_type == "MULTIPLE_CHOICES":
+        elif upper_type == "MULTIPLE_CHOICE":
             i.set_multiple_choice_type(hint)
         else:
             raise UnknownItemType(item_type)

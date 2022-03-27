@@ -36,14 +36,13 @@ def test_collection_service_crud():
     assert len(service.get_collections()) == 0
 
 
-@pytest.mark.skip
 def test_collection_item_add():
     """Tests that different types of items don't throw errors"""
 
     mr = MemoryRepository(Mock())
     service = CollectionService(mr)
 
-    uuid = service.create_collection("test")
+    uuid = service.create_collection("test")["uuid"]
 
     service.add_item_to_collection(
         answer="image_item",
@@ -61,13 +60,13 @@ def test_collection_item_add():
 
     service.add_item_to_collection(
         hint=["bla ble ___ blo blu"],
-        item_type="fillin",
+        item_type="fill_in",
         answer="bli",
         collection_uuid=uuid,
     )
 
     colls = service.get_collections()
-    assert len(colls) == 3
+    assert len(colls[0][1].items) == 3
 
 
 def test_collection_iteration():

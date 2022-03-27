@@ -4,6 +4,8 @@ from uuid import uuid4
 import src.domain as domain
 from typing import Dict, List, Tuple, Set
 import logging
+import hashlib
+import random
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -121,3 +123,10 @@ class MemoryRepository(AbstractRepository):
             del self.collections[uuid]
             return
         raise CollectionNotFound()
+
+    def upload_image(self, binary: bytes) -> str:
+        """Does not really make sense to implement this in memory.
+        
+        At lest for the time being
+        """
+        return "https://stub.link"

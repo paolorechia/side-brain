@@ -166,3 +166,10 @@ def test_memory_repository_item_collection_separation():
 
     assert len(r.item_get_all(col_uuid)) == 3
     assert len(r.item_get_all(col_uuid2)) == 1
+
+
+def test_image_link():
+    r = MemoryRepository(Mock())
+
+    link = r.upload_image("blabla")
+    assert link
