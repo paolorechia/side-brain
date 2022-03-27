@@ -16,26 +16,30 @@ def test_collection_service_crud():
     assert result["collection"]
     assert result["collection"].name == ["Some name"]
 
+    service.update_collection(uuid=result["uuid"], name="wow")
+
     result2 = service.get_collections()
+
+    item_uuid = service.add_item_to_collection(
+        name="bah", item_type="text", answer=["answer"], collection_uuid=uuid
+    )
+
+    service.update_item(uuid=item_uuid, name="buh")
 
     assert len(result2) == 1
     assert result2[0][0] == result["uuid"]
-    assert result2[0][1] == result["collection"]
+    assert result2[0][1].name == "wow"
+    assert result2[0][1].items[0].name == "buh"
 
     service.delete_collection(result["uuid"])
     assert len(service.get_collections()) == 0
 
 
-def test_collection_iteration():
+def test_collection_item_add():
     """Tests that different types of items don't throw errors"""
+
     mr = MemoryRepository(Mock())
     service = CollectionService(mr)
-    result = service.create_collection(name="Some name")
-    uuid = result["uuid"]
-
-    service.add_item_to_collection(
-        name="bah", item_type="text", answer=["answer"], collection_uuid=uuid
-    )
 
     service.add_item_to_collection(
         name="image_item",
@@ -58,6 +62,32 @@ def test_collection_iteration():
         collection_uuid=uuid,
     )
 
+    colls = service.get_collections()
+    assert len(colls) == 3
+
+
+def test_collection_iteration():
+    """Tests that different types of items don't throw errors"""
+    mr = MemoryRepository(Mock())
+    service = CollectionService(mr)
+    result = service.create_collection(name="Some name")
+    uuid = result["uuid"]
+
+    service.add_item_to_collection(
+        name="bah", item_type="text", answer=["answer"], collection_uuid=uuid
+    )
+
+    result = service.get_collection_iteration(uuid=uuid)
+
+    iteration_uuid = result["uuid"]
+    assert iteration_uuid
+    iteration = result["iteration"]
+    assert iteration
+
+    assert iteration.current_item
+
+    service.give_feedback(uuid=iteration_uuid, feedback="E")
+
 
 def test_statistics_service():
     mr = MemoryRepository(Mock())
@@ -77,8 +107,5 @@ def test_suggestion_service():
         name="bah", item_type="text", answer=["answer"], collection_uuid=uuid
     )
 
-    suggestions = service.suggest(uuid)
-    assert len(suggestions) == 1
-    assert suggestions[0]["name"] == "bah"
-    assert suggestions[0]["item_type"] == "text"
-    assert suggestions[0]["classification"] == "E"
+    suggestion = service.suggest(uuid)
+    assert suggestion["uuid"] == uuid
