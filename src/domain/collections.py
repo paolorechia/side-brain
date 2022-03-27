@@ -16,6 +16,7 @@ RANDOM_NAMES = [
     "who are you??" "pleeeease, give me a name!",
 ]
 
+
 @dataclass
 class CollectionStatistics:
     total_attempts: int = 0

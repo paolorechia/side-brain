@@ -50,3 +50,7 @@ class AbstractRepository(abc.ABC):
     @abc.abstractmethod
     def collection_delete(self, uuid: str) -> None:
         raise NotImplementedError()
+
+    @abc.abstractmethod
+    def upload_image(self, binary: bytes) -> str:
+        raise NotImplementedError()

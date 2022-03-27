@@ -7,6 +7,7 @@ import logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
+
 class CollectionService:
     def __init__(self, repository: AbstractRepository):
         self.repository = repository
@@ -27,14 +28,22 @@ class CollectionService:
     def get_collections(self):
         return self.repository.collection_get_all()
 
-    def add_item_to_collection(self, item_type: str, hint: List[str], answer: str, collection_uuid: str):
+    def add_item_to_collection(
+        self, item_type: str, hint: List[str], answer: str, collection_uuid: str
+    ):
         i = domain.Item()
         i.set_answer(answer)
         self.set_item_type(i, item_type, hint)
         logger.info("Adding item: %s to collection (%s)", i, collection_uuid)
         return self.repository.item_add(i, collection_uuid)
 
-    def update_item(self, item_uuid: str, item_type: str = None, hint: List[str] = None, answer: str = None):
+    def update_item(
+        self,
+        item_uuid: str,
+        item_type: str = None,
+        hint: List[str] = None,
+        answer: str = None,
+    ):
         item = self.repository.item_get(item_uuid)
         if item_type and hint:
             self.set_item_type(item, item_type, hint)
@@ -45,7 +54,7 @@ class CollectionService:
         if upper_type == "TEXT":
             i.set_text_type(hint[0])
         elif upper_type == "IMAGE":
-            link = self.repository.upload_image(hint[0])
+            link = self.repository.upload_image(hint[0].encode())
             i.set_image_type(link)
         elif upper_type == "FILL_IN":
             i.set_fill_in_type(hint[0])
@@ -59,7 +68,7 @@ class CollectionService:
         items = self.repository.item_get_all(collection_uuid)
         for item in items:
             self.repository.item_delete(item[0], collection_uuid)
-        
+
         self.repository.collection_delete(collection_uuid)
 
     def get_next_collection_item(self, collection_uuid: str):
@@ -102,5 +111,5 @@ class CollectionService:
         suggestions = domain.Suggestions()
         for t in tuples:
             suggestions.add(t[1])
-        
+
         return suggestions.suggest()

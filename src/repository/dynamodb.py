@@ -39,3 +39,6 @@ class DynamoDBRepository(AbstractRepository):
 
     def collection_delete(self, uuid: str) -> None:
         pass
+
+    def upload_image(self, binary: bytes) -> str:
+        pass
