@@ -40,6 +40,12 @@ class Collection:
         self.current = None
         self.name = random.choice(RANDOM_NAMES)
 
+    def to_dict(self):
+        return {
+            "name": self.name,
+            "items": [dict(item) for item in self.items]
+        }
+
     def set_name(self, name: str):
         if not name:
             raise errors.InvalidCollectionName()
