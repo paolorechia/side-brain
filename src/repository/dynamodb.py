@@ -1,6 +1,8 @@
-from .abstract import AbstractRepository
-import src.domain as domain
 from typing import List, Tuple
+
+import src.domain as domain
+
+from .abstract import AbstractRepository
 
 
 class DynamoDBRepository(AbstractRepository):

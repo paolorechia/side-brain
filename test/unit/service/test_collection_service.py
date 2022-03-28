@@ -1,8 +1,9 @@
+from unittest.mock import Mock
+
 import pytest
 
-from unittest.mock import Mock
-from src.service.collection_service import CollectionService
 from src.repository.memory import MemoryRepository
+from src.service.collection_service import CollectionService
 
 
 def test_collection_service_crud():

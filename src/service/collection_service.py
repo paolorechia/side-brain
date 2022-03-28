@@ -1,8 +1,10 @@
-from src.repository.abstract import AbstractRepository
-import src.domain as domain
-from typing import List
-from .errors import UnknownItemType, FailedToGiveFeedback
 import logging
+from typing import List
+
+import src.domain as domain
+from src.repository.abstract import AbstractRepository
+
+from .errors import FailedToGiveFeedback, UnknownItemType
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)

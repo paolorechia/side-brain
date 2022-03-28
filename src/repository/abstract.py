@@ -1,6 +1,7 @@
 import abc
-import src.domain as domain
 from typing import List, Tuple
+
+import src.domain as domain
 
 
 class AbstractRepository(abc.ABC):

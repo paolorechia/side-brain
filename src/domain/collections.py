@@ -5,7 +5,7 @@ from typing import List, Optional, Tuple
 
 import src.domain.errors as errors
 
-from .items import Item, ItemFeedback, ItemStatistics, ItemClassificationType
+from .items import Item, ItemClassificationType, ItemFeedback, ItemStatistics
 
 RANDOM_NAMES = [
     "tuna",

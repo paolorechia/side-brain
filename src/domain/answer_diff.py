@@ -1,4 +1,5 @@
 from typing import Optional
+
 import src.domain.errors as errors
 
 

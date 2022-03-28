@@ -1,6 +1,8 @@
-import pytest
-import src.domain as domain
 from datetime import datetime
+
+import pytest
+
+import src.domain as domain
 
 
 def test_item_is_instantiable():

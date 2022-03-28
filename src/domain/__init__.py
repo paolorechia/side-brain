@@ -1,19 +1,18 @@
 # flake8: noqa
+from .answer_diff import AnswerDiff
 from .collections import Collection, CollectionStatistics
-
 from .items import (
-    Item,
-    VisibleSide,
-    HiddenSide,
-    TextSide,
-    ImageSide,
-    MultipleChoiceSide,
     FillInSide,
-    ItemType,
-    ItemHistory,
-    ItemFeedback,
+    HiddenSide,
+    ImageSide,
+    Item,
     ItemClassification,
     ItemClassificationType,
+    ItemFeedback,
+    ItemHistory,
+    ItemType,
+    MultipleChoiceSide,
+    TextSide,
+    VisibleSide,
 )
-from .answer_diff import AnswerDiff
 from .suggestion import Suggestions

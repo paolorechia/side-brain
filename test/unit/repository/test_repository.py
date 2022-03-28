@@ -1,10 +1,11 @@
-import pytest
-import boto3
 from unittest.mock import Mock
 
+import boto3
+import pytest
+
 import src.domain as domain
+from src.repository.errors import CollectionNotEmpty, CollectionNotFound, ItemNotFound
 from src.repository.memory import MemoryRepository
-from src.repository.errors import ItemNotFound, CollectionNotFound, CollectionNotEmpty
 
 
 def test_memory_repository_exists():
