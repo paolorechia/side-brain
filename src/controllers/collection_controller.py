@@ -1,13 +1,20 @@
-from typing import Dict, Any
+from src.domain import commands
 from src.service.collection_service import CollectionService
+
 from .response import Response
 
-def create_collection(request: Dict[str, Any], service: CollectionService) -> Response:
-    name = request["name"]
-    new_collection = service.create_collection(name)
-    new_collection["collection"] = new_collection["collection"].to_dict()
-    return Response(
-        200,
-        new_collection
-    )
 
+def get_router():
+    pass
+
+
+def invoke(
+    command: commands.CreateCollectionCommand, service: CollectionService
+) -> Response:
+    if isinstance(command, commands.CreateCollectionCommand):
+        new_collection = service.create_collection(command.name)
+        new_collection["collection"] = new_collection["collection"]["uuid"]
+        return Response(200, new_collection)
+
+    else:
+        return Response(400, {"Invalid Command: %s", command})
