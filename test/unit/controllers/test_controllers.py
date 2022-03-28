@@ -38,7 +38,7 @@ def test_get_collections(collection_service):
     uuid = collection_service.create_collection("heh")["uuid"]
     uuid2 = collection_service.create_collection("heh2")["uuid"]
     uuid3 = collection_service.create_collection("heh3")["uuid"]
-    response = collection_controller.get_collections(
+    response = collection_controller.invoke(
         commands.GetAllCollectionsCommand, collection_service
     )
 
@@ -51,7 +51,7 @@ def test_get_collections(collection_service):
 
 def test_add_item_to_collection(collection_service):
     uuid = collection_service.create_collection("heh")["uuid"]
-    response = collection_controller.add_item_to_collection(
+    response = collection_controller.invoke(
         commands.AddItemToCollectionCommand("text", ["Lovely"], "Or not", uuid),
         collection_service,
     )
